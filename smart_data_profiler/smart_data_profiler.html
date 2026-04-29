@@ -1,0 +1,435 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.app{padding:1.5rem 0;font-family:var(--font-sans)}
+.hdr{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem}
+.logo{width:36px;height:36px;border-radius:8px;background:var(--color-background-info);display:flex;align-items:center;justify-content:center}
+.logo svg{width:18px;height:18px;stroke:var(--color-text-info);fill:none;stroke-width:2}
+.h1{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.h1sub{font-size:13px;color:var(--color-text-secondary)}
+.tabs{display:flex;gap:4px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.5rem}
+.tab{padding:8px 14px;font-size:13px;cursor:pointer;color:var(--color-text-secondary);border-bottom:2px solid transparent;margin-bottom:-0.5px;background:none;border-top:none;border-left:none;border-right:none}
+.tab.on{color:var(--color-text-info);border-bottom-color:var(--color-border-info);font-weight:500}
+.sec-lbl{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-tertiary);margin-bottom:10px}
+.drop{border:1px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:2rem;text-align:center;cursor:pointer;position:relative;transition:background .15s;margin-bottom:1rem}
+.drop:hover,.drop.drag{background:var(--color-background-secondary)}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop-icon{width:36px;height:36px;border-radius:50%;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.drop-icon svg{width:18px;height:18px;stroke:var(--color-text-secondary);fill:none;stroke-width:2}
+.drop h3{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+.drop p{font-size:13px;color:var(--color-text-secondary)}
+.demo-row{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.dbtn{font-size:12px;padding:5px 12px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;transition:all .15s}
+.dbtn:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.sg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:1.5rem}
+.sc{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:14px 16px}
+.sc .lbl{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.sc .val{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.sc .sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.cg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:1.5rem}
+.cc{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px 16px;cursor:pointer;transition:border-color .15s}
+.cc:hover,.cc.active{border-color:var(--color-border-info)}
+.cc-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.tbadge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.tn{background:var(--color-background-info);color:var(--color-text-info)}
+.tt{background:var(--color-background-success);color:var(--color-text-success)}
+.td{background:var(--color-background-warning);color:var(--color-text-warning)}
+.cname{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.mbr{display:flex;align-items:center;gap:6px;font-size:11px;margin-bottom:3px}
+.mbl{color:var(--color-text-secondary);width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
+.mbt{flex:1;height:6px;background:var(--color-background-secondary);border-radius:3px;overflow:hidden}
+.mbf{height:100%;border-radius:3px}
+.mbv{color:var(--color-text-tertiary);width:32px;text-align:right;flex-shrink:0}
+.cst{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.cs{font-size:11px}
+.cs span{color:var(--color-text-secondary)}
+.cs strong{color:var(--color-text-primary);font-weight:500}
+.nr{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:11px}
+.nt{flex:1;height:4px;background:var(--color-background-secondary);border-radius:2px;overflow:hidden}
+.nf{height:100%;background:#E24B4A;border-radius:2px}
+.nl{color:var(--color-text-tertiary);white-space:nowrap}
+.iqbox{border:0.5px solid var(--color-border-warning);border-radius:var(--border-radius-lg);padding:14px 16px;margin-bottom:1.5rem;background:var(--color-background-warning)}
+.iqhdr{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.iqhdr span{font-size:13px;font-weight:500;color:var(--color-text-warning)}
+.iq{display:flex;align-items:flex-start;gap:8px;font-size:13px;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary)}
+.iq:last-child{border-bottom:none}
+.iqdot{width:6px;height:6px;border-radius:50%;background:#BA7517;margin-top:5px;flex-shrink:0}
+.askbtn{width:100%;padding:10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s;margin-top:10px}
+.askbtn:hover{background:var(--color-background-secondary)}
+.dist-bars{display:flex;align-items:flex-end;gap:3px;height:50px}
+.dist-bar{flex:1;border-radius:2px 2px 0 0;min-height:4px}
+.dist-ax{display:flex;justify-content:space-between;font-size:10px;color:var(--color-text-tertiary);margin-top:3px}
+.corr-grid{display:grid;gap:6px;margin-bottom:1.5rem}
+.corr-row{display:flex;align-items:center;gap:10px;font-size:12px}
+.corr-pair{width:160px;color:var(--color-text-secondary);flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.corr-track{flex:1;height:8px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden}
+.corr-fill{height:100%;border-radius:4px}
+.corr-val{width:36px;text-align:right;font-weight:500;color:var(--color-text-primary);flex-shrink:0}
+.pv-wrap{overflow-x:auto;margin-bottom:1.5rem}
+.pv-table{width:100%;border-collapse:collapse;font-size:12px}
+.pv-table th{text-align:left;padding:8px 10px;border-bottom:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary);font-weight:500;background:var(--color-background-secondary)}
+.pv-table td{padding:7px 10px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);font-family:var(--font-mono);font-size:11px}
+.pv-table tr:hover td{background:var(--color-background-secondary)}
+.badge-ok{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--color-background-success);color:var(--color-text-success);font-weight:500}
+.badge-warn{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--color-background-warning);color:var(--color-text-warning);font-weight:500}
+.badge-err{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--color-background-danger);color:var(--color-text-danger);font-weight:500}
+.search-row{display:flex;gap:8px;margin-bottom:1rem;align-items:center}
+.search-row input[type=text]{flex:1;font-size:13px;padding:7px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary)}
+.sort-sel{font-size:12px;padding:7px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary)}
+.hidden{display:none}
+.progress-bar{height:4px;background:var(--color-background-secondary);border-radius:2px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;background:#378ADD;border-radius:2px;transition:width .3s}
+.score-ring{display:flex;align-items:center;gap:16px;padding:14px 16px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);margin-bottom:1.5rem}
+.ring-circle{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:500;flex-shrink:0;border:3px solid}
+.ring-info{flex:1}
+.ring-info h3{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+.ring-info p{font-size:12px;color:var(--color-text-secondary)}
+</style>
+<h2 class="sr-only">Smart Data Profiler v2 — upload a CSV or choose a demo dataset to see column statistics, correlations, data preview, and quality score</h2>
+<div class="app">
+<div class="hdr">
+  <div class="logo"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+  <div><div class="h1">Smart Data Profiler</div><div class="h1sub">Column stats · Correlations · Quality score · Data preview</div></div>
+</div>
+
+<div class="drop" id="dropzone">
+  <input type="file" accept=".csv,.tsv,.txt" id="fileInput">
+  <div class="drop-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+  <h3>Drop a CSV / TSV file here</h3>
+  <p>or click anywhere to browse your files</p>
+  <div class="demo-row">
+    <button class="dbtn" onclick="loadDemo('sales');event.stopPropagation()">Sales data</button>
+    <button class="dbtn" onclick="loadDemo('users');event.stopPropagation()">User signups</button>
+    <button class="dbtn" onclick="loadDemo('survey');event.stopPropagation()">Survey results</button>
+  </div>
+</div>
+<div id="parse-status" style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px;min-height:16px"></div>
+
+<div id="results" class="hidden">
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('overview',this)">Overview</button>
+    <button class="tab" onclick="showTab('columns',this)">Columns</button>
+    <button class="tab" onclick="showTab('correlations',this)">Correlations</button>
+    <button class="tab" onclick="showTab('preview',this)">Data preview</button>
+  </div>
+
+  <div id="tab-overview">
+    <div class="sec-lbl">Dataset summary</div>
+    <div class="sg" id="statsGrid"></div>
+    <div class="sec-lbl">Overall quality score</div>
+    <div class="score-ring" id="scoreRing"></div>
+    <div class="sec-lbl">Data quality issues</div>
+    <div class="iqbox" id="issuesBox"></div>
+    <button class="askbtn" onclick="doAsk()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Ask Claude what to do with this dataset ↗</button>
+  </div>
+
+  <div id="tab-columns" class="hidden">
+    <div class="search-row">
+      <input type="text" id="colSearch" placeholder="Search columns..." oninput="filterCols()">
+      <select class="sort-sel" id="colSort" onchange="filterCols()">
+        <option value="name">Sort: name</option>
+        <option value="nulls">Sort: most nulls</option>
+        <option value="type">Sort: type</option>
+      </select>
+    </div>
+    <div class="cg" id="colsGrid"></div>
+  </div>
+
+  <div id="tab-correlations" class="hidden">
+    <div class="sec-lbl">Numeric column correlations (Pearson r)</div>
+    <div class="corr-grid" id="corrGrid"></div>
+    <button class="askbtn" onclick="sendPrompt('Explain the correlations in my dataset and what they might mean ↗')">Explain correlations ↗</button>
+  </div>
+
+  <div id="tab-preview" class="hidden">
+    <div class="search-row">
+      <input type="text" id="rowSearch" placeholder="Filter rows..." oninput="filterRows()">
+      <select class="sort-sel" id="previewSort" onchange="renderPreview()">
+        <option value="">Sort by...</option>
+      </select>
+    </div>
+    <div class="pv-wrap"><table class="pv-table" id="pvTable"></table></div>
+  </div>
+</div>
+</div>
+
+<script>
+var G={cols:[],rows:[],fname:'',rawRows:[]};
+const COLORS=['#378ADD','#1D9E75','#BA7517','#D85A30','#7F77DD','#D4537E'];
+
+const DEMOS={
+  sales:{name:'sales_q1.csv',rawRows:[
+    ['revenue','region','order_date','discount','rep_name'],
+    [52000,'North','2025-01-05',10,'Alice'],[8200,'South','2025-01-12',0,'Bob'],[0,'East','2025-01-14',5,'Carol'],
+    [98500,'North','2025-02-01',20,'Alice'],[14000,'West','2025-02-10',0,'Dave'],[3200,'South','2025-02-14','','Bob'],
+    [27000,'East','2025-03-03',50,'Carol'],[450,'North','2025-03-11',0,'Alice'],[18000,'','2025-03-22',8,'Dave'],
+    [62000,'South','','15','Bob'],[5500,'West','2025-03-28',0,'Carol'],[33000,'North','2025-01-30',10,'Alice'],
+  ]},
+  users:{name:'users_may2026.csv',rawRows:[
+    ['age','country','signup_date','plan','referral'],
+    [24,'US','2026-01-01','free','google'],[31,'IN','2026-01-03','pro','direct'],[45,'UK','2026-01-05','enterprise','linkedin'],
+    [17,'US','2026-01-08','free','google'],[28,'IN','2026-01-10','free','direct'],[55,'','2026-02-01','pro','email'],
+    [33,'US','2026-02-12','free','google'],[29,'UK','2026-03-01','pro','linkedin'],[41,'US','2026-03-15','enterprise','direct'],
+    [22,'IN','','free','google'],[38,'US','2026-04-01','pro','email'],[,'US','2026-04-10','free','google'],
+  ]},
+  survey:{name:'nps_survey.csv',rawRows:[
+    ['nps_score','department','response_date','verbatim','tenure_years'],
+    [9,'Engineering','2026-01-10','Great tools',3],[7,'Sales','2026-01-12','',2],[4,'HR','2026-01-14','Needs work',1],
+    [10,'Finance','2026-02-01','Excellent',5],[6,'Engineering','2026-02-10','',4],[2,'Sales','2026-03-01','Poor',1],
+    [8,'HR','','Good',2],[,'Engineering','2026-03-15','',3],[5,'Finance','2026-04-01','Average',6],
+    [7,'Sales','2026-04-10','',2],[1,'HR','2026-04-15','Very poor',1],[9,'Finance','2026-04-15','',8],
+  ]}
+};
+
+function loadDemo(key){
+  var d=DEMOS[key];
+  var headers=d.rawRows[0];
+  var data=d.rawRows.slice(1);
+  G.fname=d.name; G.rawRows=data;
+  profile(d.name,headers,data);
+}
+
+function parseCSV(text){
+  var lines=text.trim().split(/\r?\n/);
+  return lines.map(function(l){
+    var res=[],cur='',inQ=false;
+    for(var i=0;i<l.length;i++){
+      var c=l[i];
+      if(c==='"'){inQ=!inQ;}
+      else if((c===','||c==='\t')&&!inQ){res.push(cur.trim());cur='';}
+      else cur+=c;
+    }
+    res.push(cur.trim());
+    return res;
+  });
+}
+
+document.getElementById('fileInput').addEventListener('change',function(e){
+  var f=e.target.files[0]; if(!f)return;
+  document.getElementById('parse-status').textContent='Reading '+f.name+'...';
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var rows=parseCSV(ev.target.result);
+      if(rows.length<2){document.getElementById('parse-status').textContent='File appears empty.';return;}
+      var headers=rows[0];
+      var data=rows.slice(1).filter(function(r){return r.some(function(c){return c!=='';});});
+      G.fname=f.name; G.rawRows=data;
+      document.getElementById('parse-status').textContent='Parsed '+data.length+' rows, '+headers.length+' columns.';
+      profile(f.name,headers,data);
+    }catch(err){document.getElementById('parse-status').textContent='Parse error: '+err.message;}
+  };
+  reader.onerror=function(){document.getElementById('parse-status').textContent='Could not read file.';};
+  reader.readAsText(f);
+});
+
+var dz=document.getElementById('dropzone');
+dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('drag');});
+dz.addEventListener('dragleave',function(){dz.classList.remove('drag');});
+dz.addEventListener('drop',function(e){
+  e.preventDefault();dz.classList.remove('drag');
+  var f=e.dataTransfer.files[0]; if(!f)return;
+  document.getElementById('parse-status').textContent='Reading '+f.name+'...';
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    var rows=parseCSV(ev.target.result);
+    if(rows.length<2)return;
+    var headers=rows[0], data=rows.slice(1).filter(function(r){return r.some(function(c){return c!=='';});});
+    G.fname=f.name; G.rawRows=data;
+    profile(f.name,headers,data);
+  };
+  reader.readAsText(f);
+});
+
+function detectType(vals){
+  var filled=vals.filter(function(v){return v!==''&&v!=null;});
+  if(!filled.length)return 'text';
+  var nums=filled.filter(function(v){return !isNaN(Number(v))&&v!=='';});
+  if(nums.length/filled.length>0.7)return 'numeric';
+  var dates=filled.filter(function(v){return !isNaN(Date.parse(v));});
+  if(dates.length/filled.length>0.7)return 'date';
+  return 'text';
+}
+
+function profile(fname,headers,dataRows){
+  var n=dataRows.length;
+  var cols=headers.map(function(name,ci){
+    var vals=dataRows.map(function(r){return r[ci]!==undefined?String(r[ci]).trim():'';});
+    var filled=vals.filter(function(v){return v!==''&&v!=='undefined'&&v!=='null';});
+    var nullPct=Math.round((n-filled.length)/n*100);
+    var type=detectType(filled);
+    if(type==='numeric'){
+      var nums=filled.map(Number).filter(function(v){return !isNaN(v);});
+      var sorted=[].concat(nums).sort(function(a,b){return a-b;});
+      var mean=nums.length?Math.round(nums.reduce(function(s,v){return s+v;},0)/nums.length):0;
+      var median=sorted.length?Math.round(sorted[Math.floor(sorted.length/2)]):0;
+      var min=sorted[0]||0,max=sorted[sorted.length-1]||0;
+      var std=nums.length?Math.round(Math.sqrt(nums.reduce(function(s,v){return s+(v-mean)*(v-mean);},0)/nums.length)):0;
+      var bk=10,step=(max-min)/bk||1;
+      var dist=Array(bk).fill(0);
+      nums.forEach(function(v){var b=Math.min(Math.floor((v-min)/step),bk-1);dist[b]++;});
+      return {name,type,nullPct,min:Math.round(min),max:Math.round(max),mean,median,std,dist,vals:nums};
+    }
+    var isDate=type==='date';
+    var freq={};
+    filled.forEach(function(v){freq[v]=(freq[v]||0)+1;});
+    var topVals=Object.entries(freq).sort(function(a,b){return b[1]-a[1];}).slice(0,4).map(function(e){return[e[0],Math.round(e[1]/filled.length*100)];});
+    var unique=Object.keys(freq).length;
+    if(isDate){
+      var dates=filled.map(function(v){return new Date(v);}).filter(function(d){return !isNaN(d);}).sort(function(a,b){return a-b;});
+      var minD=dates[0]?dates[0].toISOString().slice(0,10):'';
+      var maxD=dates[dates.length-1]?dates[dates.length-1].toISOString().slice(0,10):'';
+      return {name,type:'date',nullPct,min:minD,max:maxD,unique,topVals};
+    }
+    return {name,type:'text',nullPct,topVals,unique};
+  });
+  G.cols=cols; G.rows=dataRows; G.headers=headers; G.n=n;
+  renderAll(fname,cols,dataRows,n);
+}
+
+function renderAll(fname,cols,dataRows,n){
+  document.getElementById('results').classList.remove('hidden');
+  var numCols=cols.filter(function(c){return c.type==='numeric';}).length;
+  var txtCols=cols.filter(function(c){return c.type==='text';}).length;
+  var dateCols=cols.filter(function(c){return c.type==='date';}).length;
+  var nullCols=cols.filter(function(c){return c.nullPct>0;}).length;
+  document.getElementById('statsGrid').innerHTML=
+    '<div class="sc"><div class="lbl">Total rows</div><div class="val">'+n.toLocaleString()+'</div><div class="sub">'+fname+'</div></div>'+
+    '<div class="sc"><div class="lbl">Columns</div><div class="val">'+cols.length+'</div><div class="sub">'+numCols+' num · '+txtCols+' text · '+dateCols+' date</div></div>'+
+    '<div class="sc"><div class="lbl">Columns with nulls</div><div class="val">'+nullCols+'</div><div class="sub">out of '+cols.length+'</div></div>'+
+    '<div class="sc"><div class="lbl">Total cells</div><div class="val">'+(n*cols.length).toLocaleString()+'</div><div class="sub">dataset footprint</div></div>';
+
+  var issues=[];
+  cols.forEach(function(c){if(c.nullPct>0)issues.push(c.nullPct+'% missing values in "'+c.name+'"');});
+  cols.forEach(function(c){
+    if(c.type==='numeric'&&c.std===0)issues.push('"'+c.name+'" has zero variance (constant column)');
+    if(c.type==='text'&&c.unique===1)issues.push('"'+c.name+'" has only one unique value');
+  });
+  if(!issues.length)issues.push('No major data quality issues found.');
+
+  var score=100;
+  cols.forEach(function(c){score-=c.nullPct*0.3;});
+  score=Math.max(0,Math.round(score));
+  var scoreColor=score>=80?'#1D9E75':score>=60?'#BA7517':'#E24B4A';
+  var scoreLabel=score>=80?'Good':score>=60?'Fair':'Poor';
+  document.getElementById('scoreRing').innerHTML=
+    '<div class="ring-circle" style="color:'+scoreColor+';border-color:'+scoreColor+'">'+score+'</div>'+
+    '<div class="ring-info"><h3>Quality score: '+scoreLabel+'</h3><p>Based on missing values, variance, and column completeness. '+issues.length+' issue'+(issues.length!==1?'s':'')+' detected.</p></div>';
+
+  document.getElementById('issuesBox').innerHTML=
+    '<div class="iqhdr"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="stroke:var(--color-text-warning)"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Data quality issues</span></div>'+
+    issues.map(function(iss){return '<div class="iq"><div class="iqdot"></div>'+iss+'</div>';}).join('');
+
+  renderCols(cols);
+  renderCorr(cols);
+  renderPreviewTable(G.headers,dataRows);
+
+  var sel=document.getElementById('previewSort');
+  sel.innerHTML='<option value="">No sort</option>'+G.headers.map(function(h){return '<option value="'+h+'">'+h+'</option>';}).join('');
+}
+
+function renderCols(cols){
+  document.getElementById('colsGrid').innerHTML=cols.map(function(col,i){
+    var badge=col.type==='numeric'?'<span class="tbadge tn">numeric</span>':col.type==='date'?'<span class="tbadge td">date</span>':'<span class="tbadge tt">text</span>';
+    var body='';
+    if(col.type==='numeric'){
+      var mxH=Math.max.apply(null,col.dist);
+      var bars=col.dist.map(function(v){return '<div class="dist-bar" style="height:'+Math.round(v/mxH*100)+'%;background:'+COLORS[i%COLORS.length]+';opacity:.75"></div>';}).join('');
+      body='<div class="dist-bars">'+bars+'</div><div class="dist-ax"><span>'+col.min+'</span><span>'+col.max+'</span></div>'+
+        '<div class="cst"><div class="cs"><span>Mean </span><strong>'+col.mean.toLocaleString()+'</strong></div><div class="cs"><span>Median </span><strong>'+col.median.toLocaleString()+'</strong></div><div class="cs"><span>Std </span><strong>'+col.std.toLocaleString()+'</strong></div><div class="cs"><span>Range </span><strong>'+col.min+'–'+col.max+'</strong></div></div>';
+    } else if(col.type==='text'){
+      body='<div>'+col.topVals.map(function(tv){return '<div class="mbr"><span class="mbl">'+tv[0]+'</span><div class="mbt"><div class="mbf" style="width:'+tv[1]+'%;background:'+COLORS[i%COLORS.length]+';opacity:.75"></div></div><span class="mbv">'+tv[1]+'%</span></div>';}).join('')+'</div>'+
+        '<div class="cst"><div class="cs"><span>Unique </span><strong>'+(col.unique||'?')+'</strong></div></div>';
+    } else {
+      body='<div class="cst"><div class="cs"><span>Earliest </span><strong>'+col.min+'</strong></div><div class="cs"><span>Latest </span><strong>'+col.max+'</strong></div><div class="cs"><span>Unique </span><strong>'+col.unique+'</strong></div></div>';
+    }
+    var nullBar=col.nullPct>0?'<div class="nr"><span class="nl">Missing '+col.nullPct+'%</span><div class="nt"><div class="nf" style="width:'+col.nullPct+'%"></div></div></div>':'';
+    return '<div class="cc"><div class="cc-hdr">'+badge+'<span class="cname">'+col.name+'</span></div>'+body+nullBar+'</div>';
+  }).join('');
+}
+
+function filterCols(){
+  var q=document.getElementById('colSearch').value.toLowerCase();
+  var sort=document.getElementById('colSort').value;
+  var cols=[].concat(G.cols).filter(function(c){return c.name.toLowerCase().includes(q);});
+  if(sort==='nulls')cols.sort(function(a,b){return b.nullPct-a.nullPct;});
+  else if(sort==='type')cols.sort(function(a,b){return a.type.localeCompare(b.type);});
+  else cols.sort(function(a,b){return a.name.localeCompare(b.name);});
+  renderCols(cols);
+}
+
+function pearson(a,b){
+  var n=Math.min(a.length,b.length);
+  if(!n)return 0;
+  var ma=a.slice(0,n).reduce(function(s,v){return s+v;},0)/n;
+  var mb=b.slice(0,n).reduce(function(s,v){return s+v;},0)/n;
+  var num=0,da=0,db=0;
+  for(var i=0;i<n;i++){var ai=a[i]-ma,bi=b[i]-mb;num+=ai*bi;da+=ai*ai;db+=bi*bi;}
+  var denom=Math.sqrt(da*db);
+  return denom?parseFloat((num/denom).toFixed(2)):0;
+}
+
+function renderCorr(cols){
+  var numCols=cols.filter(function(c){return c.type==='numeric'&&c.vals&&c.vals.length;});
+  if(numCols.length<2){document.getElementById('corrGrid').innerHTML='<p style="font-size:13px;color:var(--color-text-secondary)">Need at least 2 numeric columns for correlation analysis.</p>';return;}
+  var pairs=[];
+  for(var i=0;i<numCols.length;i++)for(var j=i+1;j<numCols.length;j++){
+    var r=pearson(numCols[i].vals,numCols[j].vals);
+    pairs.push({a:numCols[i].name,b:numCols[j].name,r});
+  }
+  pairs.sort(function(x,y){return Math.abs(y.r)-Math.abs(x.r);});
+  document.getElementById('corrGrid').innerHTML=pairs.map(function(p){
+    var abs=Math.abs(p.r),col=abs>0.7?'#378ADD':abs>0.4?'#BA7517':'#888780';
+    var pct=Math.round(abs*100);
+    return '<div class="corr-row"><span class="corr-pair">'+p.a+' × '+p.b+'</span><div class="corr-track"><div class="corr-fill" style="width:'+pct+'%;background:'+col+'"></div></div><span class="corr-val" style="color:'+col+'">'+p.r+'</span></div>';
+  }).join('');
+}
+
+function renderPreviewTable(headers,rows){
+  var show=rows.slice(0,20);
+  var head='<thead><tr>'+headers.map(function(h){return '<th>'+h+'</th>';}).join('')+'</tr></thead>';
+  var body='<tbody>'+show.map(function(r){
+    return '<tr>'+headers.map(function(h,i){
+      var v=r[i]!==undefined&&r[i]!==''?r[i]:'<span style="color:var(--color-text-tertiary)">—</span>';
+      return '<td>'+v+'</td>';
+    }).join('')+'</tr>';
+  }).join('')+'</tbody>';
+  document.getElementById('pvTable').innerHTML=head+body;
+}
+
+function filterRows(){
+  var q=document.getElementById('rowSearch').value.toLowerCase();
+  var rows=G.rawRows.filter(function(r){return r.some(function(c){return String(c).toLowerCase().includes(q);});});
+  renderPreviewTable(G.headers,rows);
+}
+
+function renderPreview(){
+  var col=document.getElementById('previewSort').value;
+  var rows=[].concat(G.rawRows);
+  if(col){
+    var ci=G.headers.indexOf(col);
+    if(ci>=0) rows.sort(function(a,b){
+      var av=isNaN(Number(a[ci]))?String(a[ci]):Number(a[ci]);
+      var bv=isNaN(Number(b[ci]))?String(b[ci]):Number(b[ci]);
+      return av>bv?1:av<bv?-1:0;
+    });
+  }
+  renderPreviewTable(G.headers,rows);
+}
+
+function showTab(id,btn){
+  ['overview','columns','correlations','preview'].forEach(function(t){
+    document.getElementById('tab-'+t).classList.add('hidden');
+  });
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  document.getElementById('tab-'+id).classList.remove('hidden');
+  btn.classList.add('on');
+  if(id==='columns')filterCols();
+}
+
+function doAsk(){
+  if(!G.cols.length){sendPrompt('Help me understand how to analyze my dataset');return;}
+  var summary=G.cols.map(function(c){return c.name+' ('+c.type+', '+c.nullPct+'% nulls)';}).join(', ');
+  sendPrompt('My dataset "'+G.fname+'" has '+G.n+' rows and these columns: '+summary+'. What analyses, visualizations, or ML models would you recommend?');
+}
+</script>
